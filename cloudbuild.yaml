@@ -1,0 +1,22 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/parabolic-clock-443214-a9/choudhary-flask-app:v1', '.']
+
+  # Push the image to GCR
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/parabolic-clock-443214-a9/choudhary-flask-app:v1']
+
+  # Restart the Compute Engine instance to pull the updated image
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:latest'
+    entrypoint: 'gcloud'
+    args:
+      - 'compute'
+      - 'instances'
+      - 'reset'
+      - 'choudhary-flask-instance'
+      - '--zone'
+      - 'us-central1-a'
+
+images:
+  - 'gcr.io/parabolic-clock-443214-a9/choudhary-flask-app:v1'
